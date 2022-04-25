@@ -74,20 +74,20 @@ func TestOutputsFromInputs(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		func(tc testCaseOutputsFromInputs) {
-			t.Run(tc.message, func(t *testing.T) {
-				t.Parallel()
+		tc := tc
 
-				out := newTestOutputter()
+		t.Run(tc.message, func(t *testing.T) {
+			t.Parallel()
 
-				require.NoError(t, tc.input.SetOutputs(&out))
+			out := newTestOutputter()
 
-				assert.ElementsMatch(t, tc.expected.masked, out.masked)
+			require.NoError(t, tc.input.SetOutputs(&out))
 
-				for k, v := range tc.expected.outputs {
-					assert.JSONEq(t, v, out.outputs[k])
-				}
-			})
-		}(tc)
+			assert.ElementsMatch(t, tc.expected.masked, out.masked)
+
+			for k, v := range tc.expected.outputs {
+				assert.JSONEq(t, v, out.outputs[k])
+			}
+		})
 	}
 }

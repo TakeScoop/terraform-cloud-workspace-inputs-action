@@ -31,3 +31,25 @@ jobs:
             ${{ runner.os }}-go-
       - name: Test
         run: go test -race -v ./...
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3      
+      - uses: ./
+        id: action
+        with:
+          environments: |-
+            - staging
+            - production
+      - uses: actions/github-script@v6
+        env:
+          workspaces: '${{ steps.action.outputs.workspaces }}'
+          workspacetags: '${{ steps.action.outputs.workspace_tags }}'
+          workspacevariables: '${{ steps.action.outputs.workspace_variables }}'
+        with:
+          script: |
+            require('./test/e2e.js')({
+              workspaces: JSON.parse(process.env.workspaces),
+              tags: JSON.parse(process.env.workspacetags),
+              variables: JSON.parse(process.env.workspacevariables),
+            })

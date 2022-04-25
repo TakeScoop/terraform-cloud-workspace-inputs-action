@@ -139,18 +139,18 @@ staging:
 	}
 
 	for _, tc := range testCases {
-		func(tc testCaseInputsParse) {
-			t.Run(tc.message, func(t *testing.T) {
-				t.Parallel()
+		tc := tc
 
-				i, err := tc.input.Parse()
-				if tc.err != nil {
-					assert.ErrorIs(t, err, tc.err)
-				} else {
-					require.NoError(t, err)
-					assert.Equal(t, tc.expected, i)
-				}
-			})
-		}(tc)
+		t.Run(tc.message, func(t *testing.T) {
+			t.Parallel()
+
+			i, err := tc.input.Parse()
+			if tc.err != nil {
+				assert.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				assert.Equal(t, tc.expected, i)
+			}
+		})
 	}
 }

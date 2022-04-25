@@ -37,12 +37,12 @@ func TestNewDefaults(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		func(tc testCaseNewDefaults) {
-			t.Run(tc.message, func(t *testing.T) {
-				t.Parallel()
+		tc := tc
 
-				assert.Equal(t, tc.expected, tc.input)
-			})
-		}(tc)
+		t.Run(tc.message, func(t *testing.T) {
+			t.Parallel()
+
+			assert.Equal(t, tc.expected, tc.input)
+		})
 	}
 }
