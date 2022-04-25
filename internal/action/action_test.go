@@ -107,7 +107,37 @@ staging:
 				masked: []string{"masked"},
 			},
 		},
-		// test override default variable
+		{
+			message: "override variable input",
+			input: Inputs{
+				Environments: `---
+- staging
+- production`,
+				Variables: `---
+staging:
+- key: environment
+  value: bar
+  category: terraform`,
+			},
+			expected: testCaseRunExpected{
+				outputs: map[string]string{
+					"workspaces": `["staging", "production"]`,
+					"workspace_tags": `{
+						"staging": ["environment:staging"],
+						"production": ["environment:production"]
+					}`,
+					"workspace_variables": `{
+						"staging": [
+							{"key": "environment", "value": "bar", "category": "terraform"}
+						],
+						"production": [
+							{"key": "environment", "value": "production", "category": "terraform"}
+						]
+					}`,
+				},
+				masked: []string{},
+			},
+		},
 	}
 
 	for _, tc := range testCases {

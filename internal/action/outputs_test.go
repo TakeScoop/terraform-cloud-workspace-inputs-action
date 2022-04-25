@@ -78,7 +78,7 @@ func TestOutputsFromInputs(t *testing.T) {
 			t.Run(tc.message, func(t *testing.T) {
 				t.Parallel()
 
-				out := newTestGithubAction()
+				out := newTestOutputter()
 
 				require.NoError(t, tc.input.SetOutputs(&out))
 
