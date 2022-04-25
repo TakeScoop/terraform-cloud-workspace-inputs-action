@@ -20,11 +20,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Download actionlint
-        env:
-          ACTIONLINT_VERSION: 1.6.12
-        run: |
-          curl -fsSL  -o actionlint.tgz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
-          sudo tar xfz actionlint.tgz -C /usr/local/bin
-      - name: Check workflow files
-        run:  actionlint
+      - uses: reviewdog/action-actionlint@v1
