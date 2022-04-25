@@ -33,7 +33,7 @@ func (o *testOutputter) AddMask(p string) {
 	o.masked = append(o.masked, p)
 }
 
-func newTestGithubAction() testOutputter {
+func newTestOutputter() testOutputter {
 	return testOutputter{
 		outputs: map[string]string{},
 		masked:  []string{},
@@ -114,7 +114,7 @@ staging:
 		func(tc testCaseRun) {
 			t.Run(tc.message, func(t *testing.T) {
 				t.Parallel()
-				out := newTestGithubAction()
+				out := newTestOutputter()
 
 				require.NoError(t, Run(tc.input, &out))
 
