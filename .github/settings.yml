@@ -1,0 +1,8 @@
+_extends: .github
+
+repository:
+  name: terraform-cloud-workspace-inputs-action
+  description: A GitHub action to compose inputs that can be used to configure a Terraform Cloud Workspace via TakeScoop/terraform-cloud-workspace-action
+  topics: github, github-actions, terraform, terraform-cloud
+  visibility: internal
+  allow_auto_merge: true
