@@ -1,0 +1,25 @@
+name: Compose Inputs
+description: Compose workflow inputs
+inputs:
+  environments:
+    required: false
+    description: A YAML list of environment names
+    default: ''
+  environments_tags:
+    required: false
+    description: A YAML encoded map of environment names to a list of tags for that environment
+    default: ''
+  environments_variables:
+    required: false
+    description: A YAML encoded map of environment names to a list of Terrafrom Cloud variable objects
+    default: ''
+outputs:
+  workspaces:
+    description: Workspaces
+  workspace_tags:
+    description: Workspace tags
+  workspace_variables:
+    description: Workspace variables
+runs:
+  using: docker
+  image: Dockerfile   
