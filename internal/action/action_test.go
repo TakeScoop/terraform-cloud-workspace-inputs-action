@@ -141,19 +141,19 @@ staging:
 	}
 
 	for _, tc := range testCases {
-		func(tc testCaseRun) {
-			t.Run(tc.message, func(t *testing.T) {
-				t.Parallel()
-				out := newTestOutputter()
+		tc := tc
 
-				require.NoError(t, Run(tc.input, &out))
+		t.Run(tc.message, func(t *testing.T) {
+			t.Parallel()
+			out := newTestOutputter()
 
-				for k, o := range tc.expected.outputs {
-					assert.JSONEq(t, o, out.outputs[k], fmt.Sprintf("JSON output value at key %s does not match expected value", k))
-				}
+			require.NoError(t, Run(tc.input, &out))
 
-				assert.Equal(t, tc.expected.masked, out.masked, "Actual masked values do not match expected masked values")
-			})
-		}(tc)
+			for k, o := range tc.expected.outputs {
+				assert.JSONEq(t, o, out.outputs[k], fmt.Sprintf("JSON output value at key %s does not match expected value", k))
+			}
+
+			assert.Equal(t, tc.expected.masked, out.masked, "Actual masked values do not match expected masked values")
+		})
 	}
 }

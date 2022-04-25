@@ -120,18 +120,18 @@ func TestMergeConfig(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		func(tc testCaseMergeConfigs) {
-			t.Run(tc.message, func(t *testing.T) {
-				t.Parallel()
+		tc := tc
 
-				actual := MergeConfigs(tc.input[0], tc.input[1])
-				assert.ElementsMatch(t, tc.expected.Names, actual.Names)
+		t.Run(tc.message, func(t *testing.T) {
+			t.Parallel()
 
-				for _, e := range actual.Names {
-					assert.ElementsMatch(t, tc.expected.Tags[e], actual.Tags[e])
-					assert.ElementsMatch(t, tc.expected.Variables[e], actual.Variables[e])
-				}
-			})
-		}(tc)
+			actual := MergeConfigs(tc.input[0], tc.input[1])
+			assert.ElementsMatch(t, tc.expected.Names, actual.Names)
+
+			for _, e := range actual.Names {
+				assert.ElementsMatch(t, tc.expected.Tags[e], actual.Tags[e])
+				assert.ElementsMatch(t, tc.expected.Variables[e], actual.Variables[e])
+			}
+		})
 	}
 }

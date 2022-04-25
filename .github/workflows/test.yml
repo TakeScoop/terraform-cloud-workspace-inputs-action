@@ -31,3 +31,17 @@ jobs:
             ${{ runner.os }}-go-
       - name: Test
         run: go test -race -v ./...
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3      
+      - uses: .
+        id: action
+        with:
+          environments: |-
+            - staging
+            - production
+      - run: |-
+          echo ${{ steps.action.outputs.workspaces }}
+          echo ${{ steps.action.outputs.workspace_variables }}
+          echo ${{ steps.action.outputs.workspace_tags }}
