@@ -22,8 +22,6 @@ func (c Config) SetOutputs(o Outputter) error {
 
 	for _, vars := range c.Variables {
 		for _, v := range vars {
-			fmt.Println(v.Value, v.Sensitive)
-
 			if v.Sensitive {
 				o.AddMask(v.Value)
 			}
