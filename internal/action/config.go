@@ -2,7 +2,6 @@ package action
 
 import (
 	"errors"
-	"fmt"
 )
 
 var (
@@ -13,95 +12,37 @@ var (
 // Config holds the parsed workspace values
 type Config struct {
 	//EnvironmentsVariables hold variables for specific environments
-	EnvironmentsVariables map[string][]Variable
+	EnvironmentsVariables EnvironmentsVariables
 	// EnvironmentsTags hold tags for specific environments
-	EnvironmentsTags map[string][]string
+	EnvironmentsTags EnvironmentsTags
 	// Environments entires indicate that one workspace should be created per environment
-	Environments []string
+	Environments Environments
 	// Name represents the workspace name, or a workspace prefix in a multi environment configuration
 	Name string
 	// Tags are universally applied to all managed workspaces
-	Tags []string
+	Tags Tags
 }
 
 // NewConfig returns an empty Config struct
 func NewConfig(name string) Config {
 	return Config{
-		Environments:          []string{},
-		EnvironmentsVariables: map[string][]Variable{},
-		EnvironmentsTags:      map[string][]string{},
-		Tags:                  []string{},
+		Environments:          Environments{},
+		EnvironmentsVariables: EnvironmentsVariables{},
+		EnvironmentsTags:      EnvironmentsTags{},
+		Tags:                  Tags{},
 		Name:                  name,
 	}
 }
 
 // ExtendConfig takes two Config structs and extends the values in a with values from b, removing duplicates
 func ExtendConfig(a Config, b Config) Config {
-	merged := NewConfig(a.Name)
+	envs := mergeEnvironments(a.Environments, b.Environments)
 
-	envMap := map[string]bool{}
-	for _, e := range append(a.Environments, b.Environments...) {
-		if _, ok := envMap[e]; !ok {
-			merged.Environments = append(merged.Environments, e)
-			envMap[e] = true
-		}
+	return Config{
+		Name:                  a.Name,
+		Environments:          envs,
+		EnvironmentsVariables: mergeEnvironmentsVariables(a.EnvironmentsVariables, b.EnvironmentsVariables, envs),
+		EnvironmentsTags:      mergeEnvironmentsTags(a.EnvironmentsTags, b.EnvironmentsTags, envs),
+		Tags:                  mergeTags(a.Tags, b.Tags),
 	}
-
-	for _, e := range merged.Environments {
-		merged.EnvironmentsTags[e] = []string{}
-
-		tagMap := map[string]bool{}
-
-		if aTags, ok := a.EnvironmentsTags[e]; ok {
-			for _, t := range aTags {
-				if _, ok := tagMap[t]; !ok {
-					merged.EnvironmentsTags[e] = append(merged.EnvironmentsTags[e], t)
-					tagMap[t] = true
-				}
-			}
-		}
-
-		if bTags, ok := b.EnvironmentsTags[e]; ok {
-			for _, t := range bTags {
-				if _, ok := tagMap[t]; !ok {
-					merged.EnvironmentsTags[e] = append(merged.EnvironmentsTags[e], t)
-					tagMap[t] = true
-				}
-			}
-		}
-	}
-
-	for _, e := range merged.Environments {
-		merged.EnvironmentsVariables[e] = []Variable{}
-
-		varMap := map[string]Variable{}
-
-		if aVars, ok := a.EnvironmentsVariables[e]; ok {
-			for _, v := range aVars {
-				if _, ok := varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)]; !ok {
-					merged.EnvironmentsVariables[e] = append(merged.EnvironmentsVariables[e], v)
-					varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)] = v
-				}
-			}
-		}
-
-		if bVars, ok := b.EnvironmentsVariables[e]; ok {
-			for _, v := range bVars {
-				if _, ok := varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)]; !ok {
-					merged.EnvironmentsVariables[e] = append(merged.EnvironmentsVariables[e], v)
-					varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)] = v
-				}
-			}
-		}
-	}
-
-	tMap := map[string]bool{}
-	for _, t := range append(a.Tags, b.Tags...) {
-		if _, ok := tMap[t]; !ok {
-			tMap[t] = true
-			merged.Tags = append(merged.Tags, t)
-		}
-	}
-
-	return merged
 }

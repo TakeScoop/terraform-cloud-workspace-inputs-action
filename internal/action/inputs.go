@@ -2,9 +2,6 @@ package action
 
 import (
 	"errors"
-	"fmt"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Inputs struct {
@@ -25,48 +22,24 @@ func (i Inputs) Parse() (Config, error) {
 		return Config{}, ErrNameNotSet
 	}
 
-	var environments []string
-	if err := yaml.Unmarshal([]byte(i.Environments), &environments); err != nil {
-		return Config{}, fmt.Errorf("failed to parse Names: %w", err)
+	environments, err := ParseEnvironments(i.Environments)
+	if err != nil {
+		return Config{}, err
 	}
 
-	var wsVars map[string][]Variable
-	if err := yaml.Unmarshal([]byte(i.EnvironmentsVariables), &wsVars); err != nil {
-		return Config{}, fmt.Errorf("failed to parse workspace variables: %w", err)
+	wsVars, err := ParseEnvironmentsVariables(i.EnvironmentsVariables, environments)
+	if err != nil {
+		return Config{}, err
 	}
 
-	for env := range wsVars {
-		found := false
-		for _, e := range environments {
-			if e == env {
-				found = true
-			}
-		}
-		if !found {
-			return Config{}, fmt.Errorf("environment %s in passed tags not found in environments %v: %w", env, environments, ErrEnvironmentNotFound)
-		}
+	wsTags, err := ParseEnvironmentsTags(i.EnvironmentsTags, environments)
+	if err != nil {
+		return Config{}, err
 	}
 
-	var wsTags map[string][]string
-	if err := yaml.Unmarshal([]byte(i.EnvironmentsTags), &wsTags); err != nil {
-		return Config{}, fmt.Errorf("failed to parse workspace tags: %w", err)
-	}
-
-	for env := range wsTags {
-		found := false
-		for _, e := range environments {
-			if e == env {
-				found = true
-			}
-		}
-		if !found {
-			return Config{}, fmt.Errorf("environment %s in passed variables not found in environments %v: %w", env, environments, ErrEnvironmentNotFound)
-		}
-	}
-
-	var tags []string
-	if err := yaml.Unmarshal([]byte(i.Tags), &tags); err != nil {
-		return Config{}, fmt.Errorf("failed to parse tags: %w", err)
+	tags, err := ParseTags(i.Tags)
+	if err != nil {
+		return Config{}, err
 	}
 
 	return Config{
