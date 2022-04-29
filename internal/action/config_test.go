@@ -17,49 +17,49 @@ func TestMergeConfig(t *testing.T) {
 		{
 			message: "no tags",
 			input: [2]Config{
-				{Names: []string{"staging"}},
+				{Environments: []string{"staging"}},
 				{},
 			},
 			expected: Config{
-				Names:     []string{"staging"},
-				Tags:      map[string][]string{"staging": {}},
-				Variables: map[string][]Variable{"staging": {}},
+				Environments:          []string{"staging"},
+				EnvironmentsTags:      map[string][]string{"staging": {}},
+				EnvironmentsVariables: map[string][]Variable{"staging": {}},
 			},
 		},
 		{
 			message: "dedupe workspace tags",
 			input: [2]Config{
 				{
-					Names: []string{"staging"},
-					Tags:  map[string][]string{"staging": {"environment:staging"}},
+					Environments:     []string{"staging"},
+					EnvironmentsTags: map[string][]string{"staging": {"environment:staging"}},
 				},
-				{Tags: map[string][]string{"staging": {"environment:staging"}}},
+				{EnvironmentsTags: map[string][]string{"staging": {"environment:staging"}}},
 			},
 			expected: Config{
-				Names:     []string{"staging"},
-				Tags:      map[string][]string{"staging": {"environment:staging"}},
-				Variables: map[string][]Variable{"staging": {}},
+				Environments:          []string{"staging"},
+				EnvironmentsTags:      map[string][]string{"staging": {"environment:staging"}},
+				EnvironmentsVariables: map[string][]Variable{"staging": {}},
 			},
 		},
 		{
 			message: "dedupe variables",
 			input: [2]Config{
 				{
-					Names: []string{"staging"},
-					Variables: map[string][]Variable{
+					Environments: []string{"staging"},
+					EnvironmentsVariables: map[string][]Variable{
 						"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
 					},
 				},
 				{
-					Variables: map[string][]Variable{
+					EnvironmentsVariables: map[string][]Variable{
 						"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
 					},
 				},
 			},
 			expected: Config{
-				Names: []string{"staging"},
-				Tags:  map[string][]string{"staging": {}},
-				Variables: map[string][]Variable{
+				Environments:     []string{"staging"},
+				EnvironmentsTags: map[string][]string{"staging": {}},
+				EnvironmentsVariables: map[string][]Variable{
 					"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
 				},
 			},
@@ -68,8 +68,8 @@ func TestMergeConfig(t *testing.T) {
 			message: "extend default",
 			input: [2]Config{
 				{
-					Names: []string{"staging", "production"},
-					Variables: map[string][]Variable{
+					Environments: []string{"staging", "production"},
+					EnvironmentsVariables: map[string][]Variable{
 						"staging": {
 							{Key: "environment", Value: "staging", Category: "terraform"},
 						},
@@ -77,14 +77,14 @@ func TestMergeConfig(t *testing.T) {
 							{Key: "environment", Value: "production", Category: "terraform"},
 						},
 					},
-					Tags: map[string][]string{
+					EnvironmentsTags: map[string][]string{
 						"staging":    {"environment:staging"},
 						"production": {"environment:production"},
 					},
 				},
 				{
-					Names: []string{"staging", "production"},
-					Variables: map[string][]Variable{
+					Environments: []string{"staging", "production"},
+					EnvironmentsVariables: map[string][]Variable{
 						"staging": {
 							{Key: "environment", Value: "staging", Category: "terraform"},
 							{Key: "foo", Value: "bar", Category: "env"},
@@ -93,15 +93,15 @@ func TestMergeConfig(t *testing.T) {
 							{Key: "baz", Value: "woz", Category: "terraform"},
 						},
 					},
-					Tags: map[string][]string{
+					EnvironmentsTags: map[string][]string{
 						"staging":    {"foo:bar"},
 						"production": {"environment:production", "baz:woz"},
 					},
 				},
 			},
 			expected: Config{
-				Names: []string{"staging", "production"},
-				Variables: map[string][]Variable{
+				Environments: []string{"staging", "production"},
+				EnvironmentsVariables: map[string][]Variable{
 					"staging": {
 						{Key: "environment", Value: "staging", Category: "terraform"},
 						{Key: "foo", Value: "bar", Category: "env"},
@@ -111,7 +111,7 @@ func TestMergeConfig(t *testing.T) {
 						{Key: "baz", Value: "woz", Category: "terraform"},
 					},
 				},
-				Tags: map[string][]string{
+				EnvironmentsTags: map[string][]string{
 					"staging":    {"environment:staging", "foo:bar"},
 					"production": {"environment:production", "baz:woz"},
 				},
@@ -126,11 +126,11 @@ func TestMergeConfig(t *testing.T) {
 			t.Parallel()
 
 			actual := MergeConfigs(tc.input[0], tc.input[1])
-			assert.ElementsMatch(t, tc.expected.Names, actual.Names)
+			assert.ElementsMatch(t, tc.expected.Environments, actual.Environments)
 
-			for _, e := range actual.Names {
-				assert.ElementsMatch(t, tc.expected.Tags[e], actual.Tags[e])
-				assert.ElementsMatch(t, tc.expected.Variables[e], actual.Variables[e])
+			for _, e := range actual.Environments {
+				assert.ElementsMatch(t, tc.expected.EnvironmentsTags[e], actual.EnvironmentsTags[e])
+				assert.ElementsMatch(t, tc.expected.EnvironmentsVariables[e], actual.EnvironmentsVariables[e])
 			}
 		})
 	}

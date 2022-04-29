@@ -23,12 +23,12 @@ func TestNewDefaults(t *testing.T) {
 			message: "environments",
 			input:   NewDefaults([]string{"staging", "production"}),
 			expected: Config{
-				Names: []string{"staging", "production"},
-				Tags: map[string][]string{
+				Environments: []string{"staging", "production"},
+				EnvironmentsTags: map[string][]string{
 					"staging":    {"environment:staging"},
 					"production": {"environment:production"},
 				},
-				Variables: map[string][]Variable{
+				EnvironmentsVariables: map[string][]Variable{
 					"staging":    {{Key: "environment", Value: "staging", Category: "terraform"}},
 					"production": {{Key: "environment", Value: "production", Category: "terraform"}},
 				},

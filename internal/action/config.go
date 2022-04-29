@@ -12,17 +12,17 @@ var (
 
 // Config holds the parsed workspace values
 type Config struct {
-	Variables map[string][]Variable
-	Tags      map[string][]string
-	Names     []string
+	EnvironmentsVariables map[string][]Variable
+	EnvironmentsTags      map[string][]string
+	Environments          []string
 }
 
 // NewConfig returns an empty Config struct
 func NewConfig() Config {
 	return Config{
-		Names:     []string{},
-		Variables: map[string][]Variable{},
-		Tags:      map[string][]string{},
+		Environments:          []string{},
+		EnvironmentsVariables: map[string][]Variable{},
+		EnvironmentsTags:      map[string][]string{},
 	}
 }
 
@@ -31,55 +31,55 @@ func MergeConfigs(a Config, b Config) Config {
 	merged := NewConfig()
 
 	envMap := map[string]bool{}
-	for _, e := range append(a.Names, b.Names...) {
+	for _, e := range append(a.Environments, b.Environments...) {
 		if _, ok := envMap[e]; !ok {
-			merged.Names = append(merged.Names, e)
+			merged.Environments = append(merged.Environments, e)
 			envMap[e] = true
 		}
 	}
 
-	for _, e := range merged.Names {
-		merged.Tags[e] = []string{}
+	for _, e := range merged.Environments {
+		merged.EnvironmentsTags[e] = []string{}
 
 		tagMap := map[string]bool{}
 
-		if aTags, ok := a.Tags[e]; ok {
+		if aTags, ok := a.EnvironmentsTags[e]; ok {
 			for _, t := range aTags {
 				if _, ok := tagMap[t]; !ok {
-					merged.Tags[e] = append(merged.Tags[e], t)
+					merged.EnvironmentsTags[e] = append(merged.EnvironmentsTags[e], t)
 					tagMap[t] = true
 				}
 			}
 		}
 
-		if bTags, ok := b.Tags[e]; ok {
+		if bTags, ok := b.EnvironmentsTags[e]; ok {
 			for _, t := range bTags {
 				if _, ok := tagMap[t]; !ok {
-					merged.Tags[e] = append(merged.Tags[e], t)
+					merged.EnvironmentsTags[e] = append(merged.EnvironmentsTags[e], t)
 					tagMap[t] = true
 				}
 			}
 		}
 	}
 
-	for _, e := range merged.Names {
-		merged.Variables[e] = []Variable{}
+	for _, e := range merged.Environments {
+		merged.EnvironmentsVariables[e] = []Variable{}
 
 		varMap := map[string]Variable{}
 
-		if aVars, ok := a.Variables[e]; ok {
+		if aVars, ok := a.EnvironmentsVariables[e]; ok {
 			for _, v := range aVars {
 				if _, ok := varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)]; !ok {
-					merged.Variables[e] = append(merged.Variables[e], v)
+					merged.EnvironmentsVariables[e] = append(merged.EnvironmentsVariables[e], v)
 					varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)] = v
 				}
 			}
 		}
 
-		if bVars, ok := b.Variables[e]; ok {
+		if bVars, ok := b.EnvironmentsVariables[e]; ok {
 			for _, v := range bVars {
 				if _, ok := varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)]; !ok {
-					merged.Variables[e] = append(merged.Variables[e], v)
+					merged.EnvironmentsVariables[e] = append(merged.EnvironmentsVariables[e], v)
 					varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)] = v
 				}
 			}

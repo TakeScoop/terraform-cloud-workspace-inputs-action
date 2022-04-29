@@ -5,22 +5,16 @@ import (
 	"fmt"
 )
 
-type Outputs struct {
-	Workspaces string
-	Tags       string
-	Variables  string
-}
-
 func (c Config) SetOutputs(o Outputter) error {
-	if err := setOutput(o, "workspaces", c.Names); err != nil {
+	if err := setOutput(o, "workspaces", c.Environments); err != nil {
 		return err
 	}
 
-	if err := setOutput(o, "workspace_tags", c.Tags); err != nil {
+	if err := setOutput(o, "workspace_tags", c.EnvironmentsTags); err != nil {
 		return err
 	}
 
-	for _, vars := range c.Variables {
+	for _, vars := range c.EnvironmentsVariables {
 		for _, v := range vars {
 			if v.Sensitive {
 				o.AddMask(v.Value)
@@ -28,7 +22,7 @@ func (c Config) SetOutputs(o Outputter) error {
 		}
 	}
 
-	if err := setOutput(o, "workspace_variables", c.Variables); err != nil {
+	if err := setOutput(o, "workspace_variables", c.EnvironmentsVariables); err != nil {
 		return err
 	}
 
