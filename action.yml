@@ -13,6 +13,14 @@ inputs:
     required: false
     description: A YAML encoded map of environment names to a list of Terraform Cloud variable objects
     default: ''
+  name:
+    required: false
+    description: Workspace name, or workspace name prefix in the case of a multi-environment configuration
+    default: "${{ github.event.repository.name }}"
+  tags:
+    required: false
+    description: A YAML encoded list of tags that apply to all workspaces
+    default: ''
 outputs:
   workspaces:
     description: Workspaces

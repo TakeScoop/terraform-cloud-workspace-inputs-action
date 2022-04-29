@@ -4,7 +4,7 @@ module.exports = test
 
 const assert = require('assert')
 
-function test({workspaces, tags, variables}) {
+function test({name, tags, workspaces, workspaceTags, workspaceVariables}) {
   const testCases = [
     {
       test: 'workspaces output',
@@ -15,7 +15,7 @@ function test({workspaces, tags, variables}) {
     {
       test: 'workspace_tags output',
       message: 'workspace tag map does not equal the expected output',
-      actual: tags,
+      actual: workspaceTags,
       expected: {
         staging: ['environment:staging'],
         production: ['environment:production'],
@@ -24,7 +24,7 @@ function test({workspaces, tags, variables}) {
     {
       test: 'workspace_variables output',
       message: 'workspace variables map does not equal the expected output',
-      actual: variables,
+      actual: workspaceVariables,
       expected:{
         staging: [{
           key: 'environment',
@@ -37,7 +37,13 @@ function test({workspaces, tags, variables}) {
           category: 'terraform',      
         }]
       }  
-    }
+    },
+    {
+      test: 'tags output',
+      message: 'tags list does not equal the expected output',
+      actual: tags,
+      expected: [`source:${name}`],
+    },
   ]
 
   testCases.forEach(({test, actual, expected, message}) => {

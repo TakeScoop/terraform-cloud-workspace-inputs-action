@@ -15,13 +15,19 @@ type testCaseNewDefaults struct {
 func TestNewDefaults(t *testing.T) {
 	testCases := []testCaseNewDefaults{
 		{
-			message:  "empty environments",
-			input:    NewDefaults([]string{}),
-			expected: NewConfig(),
+			message: "empty environments",
+			input:   NewDefaults([]string{}, "empty"),
+			expected: Config{
+				Environments:          []string{},
+				EnvironmentsTags:      map[string][]string{},
+				EnvironmentsVariables: map[string][]Variable{},
+				Tags:                  []string{"source:empty"},
+				Name:                  "empty",
+			},
 		},
 		{
 			message: "environments",
-			input:   NewDefaults([]string{"staging", "production"}),
+			input:   NewDefaults([]string{"staging", "production"}, "name"),
 			expected: Config{
 				Environments: []string{"staging", "production"},
 				EnvironmentsTags: map[string][]string{
@@ -32,6 +38,8 @@ func TestNewDefaults(t *testing.T) {
 					"staging":    {{Key: "environment", Value: "staging", Category: "terraform"}},
 					"production": {{Key: "environment", Value: "production", Category: "terraform"}},
 				},
+				Tags: []string{"source:name"},
+				Name: "name",
 			},
 		},
 	}

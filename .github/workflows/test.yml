@@ -46,10 +46,14 @@ jobs:
           workspaces: '${{ steps.action.outputs.workspaces }}'
           workspacetags: '${{ steps.action.outputs.workspace_tags }}'
           workspacevariables: '${{ steps.action.outputs.workspace_variables }}'
+          tags: '${{ steps.action.outputs.tags }}'
+          name: '${{ steps.action.outputs.name }}'
         with:
           script: |
             require('./test/e2e.js')({
               workspaces: JSON.parse(process.env.workspaces),
-              tags: JSON.parse(process.env.workspacetags),
-              variables: JSON.parse(process.env.workspacevariables),
+              workspaceTags: JSON.parse(process.env.workspacetags),
+              workspaceVariables: JSON.parse(process.env.workspacevariables),
+              tags: JSON.parse(process.env.tags),
+              name: process.env.name,
             })

@@ -11,7 +11,7 @@ func Run(inputs Inputs, out Outputter) error {
 		return err
 	}
 
-	merged := MergeConfigs(config, NewDefaults(config.Environments))
+	merged := ExtendConfig(config, NewDefaults(config.Environments, config.Name))
 
 	if err := merged.SetOutputs(out); err != nil {
 		return err

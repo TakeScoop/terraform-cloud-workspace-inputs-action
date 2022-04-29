@@ -17,24 +17,32 @@ type testCaseInputsParse struct {
 func TestInputsParse(t *testing.T) {
 	testCases := []testCaseInputsParse{
 		{
+			message: "name required",
+			input:   Inputs{},
+			err:     ErrNameNotSet,
+		},
+		{
 			message:  "empty inputs",
-			input:    Inputs{},
-			expected: Config{},
+			input:    Inputs{Name: "empty"},
+			expected: Config{Name: "empty"},
 		},
 		{
 			message: "basic environments",
 			input: Inputs{
+				Name: "workspace",
 				Environments: `---
 - staging
 - production`,
 			},
 			expected: Config{
+				Name:         "workspace",
 				Environments: []string{"staging", "production"},
 			},
 		},
 		{
 			message: "basic workspace tags",
 			input: Inputs{
+				Name: "workspace",
 				EnvironmentsTags: `---
 staging:
   - foo:bar
@@ -45,6 +53,7 @@ production:
   - production`,
 			},
 			expected: Config{
+				Name:         "workspace",
 				Environments: []string{"staging", "production"},
 				EnvironmentsTags: map[string][]string{
 					"staging":    {"foo:bar"},
@@ -55,6 +64,7 @@ production:
 		{
 			message: "tags for one environment",
 			input: Inputs{
+				Name: "workspace",
 				Environments: `---
   - staging
   - production`,
@@ -63,6 +73,7 @@ staging:
   - foo:bar`,
 			},
 			expected: Config{
+				Name:         "workspace",
 				Environments: []string{"staging", "production"},
 				EnvironmentsTags: map[string][]string{
 					"staging": {"foo:bar"},
@@ -72,6 +83,7 @@ staging:
 		{
 			message: "tags non existent environment",
 			input: Inputs{
+				Name: "workspace",
 				Environments: `---
 - production`,
 				EnvironmentsTags: `---
@@ -83,6 +95,7 @@ staging:
 		{
 			message: "basic variables",
 			input: Inputs{
+				Name: "workspace",
 				Environments: `---
 - staging
 - production`,
@@ -97,6 +110,7 @@ production:
   category: terraform`,
 			},
 			expected: Config{
+				Name:         "workspace",
 				Environments: []string{"staging", "production"},
 				EnvironmentsVariables: map[string][]Variable{
 					"staging":    {{Key: "foo", Value: "bar", Category: "terraform"}},
@@ -107,6 +121,7 @@ production:
 		{
 			message: "variable for one environment",
 			input: Inputs{
+				Name: "workspace",
 				Environments: `---
 - staging
 - production`,
@@ -117,6 +132,7 @@ staging:
   category: terraform`,
 			},
 			expected: Config{
+				Name:         "workspace",
 				Environments: []string{"staging", "production"},
 				EnvironmentsVariables: map[string][]Variable{
 					"staging": {{Key: "foo", Value: "bar", Category: "terraform"}},
@@ -126,6 +142,7 @@ staging:
 		{
 			message: "variable for missing environment",
 			input: Inputs{
+				Name: "workspace",
 				Environments: `---
 - production`,
 				EnvironmentsVariables: `---
@@ -135,6 +152,24 @@ staging:
   category: terraform`,
 			},
 			err: ErrEnvironmentNotFound,
+		},
+		{
+			message:  "workspace name",
+			input:    Inputs{Name: "foo"},
+			expected: Config{Name: "foo"},
+		},
+		{
+			message: "tags",
+			input: Inputs{
+				Name: "workspace",
+				Tags: `---
+- department:engineering
+- division:platform`,
+			},
+			expected: Config{
+				Name: "workspace",
+				Tags: []string{"department:engineering", "division:platform"},
+			},
 		},
 	}
 

@@ -12,23 +12,32 @@ var (
 
 // Config holds the parsed workspace values
 type Config struct {
+	//EnvironmentsVariables hold variables for specific environments
 	EnvironmentsVariables map[string][]Variable
-	EnvironmentsTags      map[string][]string
-	Environments          []string
+	// EnvironmentsTags hold tags for specific environments
+	EnvironmentsTags map[string][]string
+	// Environments entires indicate that one workspace should be created per environment
+	Environments []string
+	// Name represents the workspace name, or a workspace prefix in a multi environment configuration
+	Name string
+	// Tags are universally applied to all managed workspaces
+	Tags []string
 }
 
 // NewConfig returns an empty Config struct
-func NewConfig() Config {
+func NewConfig(name string) Config {
 	return Config{
 		Environments:          []string{},
 		EnvironmentsVariables: map[string][]Variable{},
 		EnvironmentsTags:      map[string][]string{},
+		Tags:                  []string{},
+		Name:                  name,
 	}
 }
 
-// MergeConfigs takes two Config structs and merges the values, removing duplicates
-func MergeConfigs(a Config, b Config) Config {
-	merged := NewConfig()
+// ExtendConfig takes two Config structs and extends the values in a with values from b, removing duplicates
+func ExtendConfig(a Config, b Config) Config {
+	merged := NewConfig(a.Name)
 
 	envMap := map[string]bool{}
 	for _, e := range append(a.Environments, b.Environments...) {
@@ -83,6 +92,14 @@ func MergeConfigs(a Config, b Config) Config {
 					varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)] = v
 				}
 			}
+		}
+	}
+
+	tMap := map[string]bool{}
+	for _, t := range append(a.Tags, b.Tags...) {
+		if _, ok := tMap[t]; !ok {
+			tMap[t] = true
+			merged.Tags = append(merged.Tags, t)
 		}
 	}
 
