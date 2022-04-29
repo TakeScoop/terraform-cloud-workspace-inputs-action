@@ -29,13 +29,13 @@ func TestInputsParse(t *testing.T) {
 - production`,
 			},
 			expected: Config{
-				Names: []string{"staging", "production"},
+				Environments: []string{"staging", "production"},
 			},
 		},
 		{
 			message: "basic workspace tags",
 			input: Inputs{
-				Tags: `---
+				EnvironmentsTags: `---
 staging:
   - foo:bar
 production:
@@ -45,8 +45,8 @@ production:
   - production`,
 			},
 			expected: Config{
-				Names: []string{"staging", "production"},
-				Tags: map[string][]string{
+				Environments: []string{"staging", "production"},
+				EnvironmentsTags: map[string][]string{
 					"staging":    {"foo:bar"},
 					"production": {"baz:woz"},
 				},
@@ -58,13 +58,13 @@ production:
 				Environments: `---
   - staging
   - production`,
-				Tags: `---
+				EnvironmentsTags: `---
 staging:
   - foo:bar`,
 			},
 			expected: Config{
-				Names: []string{"staging", "production"},
-				Tags: map[string][]string{
+				Environments: []string{"staging", "production"},
+				EnvironmentsTags: map[string][]string{
 					"staging": {"foo:bar"},
 				},
 			},
@@ -74,7 +74,7 @@ staging:
 			input: Inputs{
 				Environments: `---
 - production`,
-				Tags: `---
+				EnvironmentsTags: `---
 staging:
   - foo:bar`,
 			},
@@ -86,7 +86,7 @@ staging:
 				Environments: `---
 - staging
 - production`,
-				Variables: `---
+				EnvironmentsVariables: `---
 staging:
 - key: foo
   value: bar
@@ -97,8 +97,8 @@ production:
   category: terraform`,
 			},
 			expected: Config{
-				Names: []string{"staging", "production"},
-				Variables: map[string][]Variable{
+				Environments: []string{"staging", "production"},
+				EnvironmentsVariables: map[string][]Variable{
 					"staging":    {{Key: "foo", Value: "bar", Category: "terraform"}},
 					"production": {{Key: "baz", Value: "woz", Category: "terraform"}},
 				},
@@ -110,15 +110,15 @@ production:
 				Environments: `---
 - staging
 - production`,
-				Variables: `---
+				EnvironmentsVariables: `---
 staging:
 - key: foo
   value: bar
   category: terraform`,
 			},
 			expected: Config{
-				Names: []string{"staging", "production"},
-				Variables: map[string][]Variable{
+				Environments: []string{"staging", "production"},
+				EnvironmentsVariables: map[string][]Variable{
 					"staging": {{Key: "foo", Value: "bar", Category: "terraform"}},
 				},
 			},
@@ -128,7 +128,7 @@ staging:
 			input: Inputs{
 				Environments: `---
 - production`,
-				Variables: `---
+				EnvironmentsVariables: `---
 staging:
 - key: foo
   value: bar

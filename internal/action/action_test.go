@@ -45,9 +45,9 @@ func TestRun(t *testing.T) {
 		{
 			message: "empty string inputs",
 			input: Inputs{
-				Environments: "",
-				Tags:         "",
-				Variables:    "",
+				Environments:          "",
+				EnvironmentsTags:      "",
+				EnvironmentsVariables: "",
 			},
 			expected: testCaseRunExpected{
 				outputs: map[string]string{
@@ -61,9 +61,9 @@ func TestRun(t *testing.T) {
 		{
 			message: "empty yaml inputs",
 			input: Inputs{
-				Environments: "",
-				Tags:         "",
-				Variables:    "",
+				Environments:          "",
+				EnvironmentsTags:      "",
+				EnvironmentsVariables: "",
 			},
 			expected: testCaseRunExpected{
 				outputs: map[string]string{
@@ -80,7 +80,7 @@ func TestRun(t *testing.T) {
 				Environments: `---
 - staging
 - production`,
-				Variables: `---
+				EnvironmentsVariables: `---
 staging:
 - key: secret
   value: masked				
@@ -113,7 +113,7 @@ staging:
 				Environments: `---
 - staging
 - production`,
-				Variables: `---
+				EnvironmentsVariables: `---
 staging:
 - key: environment
   value: bar

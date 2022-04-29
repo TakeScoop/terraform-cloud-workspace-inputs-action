@@ -11,7 +11,7 @@ inputs:
     default: ''
   environments_variables:
     required: false
-    description: A YAML encoded map of environment names to a list of Terrafrom Cloud variable objects
+    description: A YAML encoded map of environment names to a list of Terraform Cloud variable objects
     default: ''
 outputs:
   workspaces:

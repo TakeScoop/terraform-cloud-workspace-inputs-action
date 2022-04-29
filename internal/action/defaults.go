@@ -4,15 +4,15 @@ import "fmt"
 
 func NewDefaults(environments []string) Config {
 	defaults := Config{
-		Names:     []string{},
-		Variables: map[string][]Variable{},
-		Tags:      map[string][]string{},
+		Environments:          []string{},
+		EnvironmentsVariables: map[string][]Variable{},
+		EnvironmentsTags:      map[string][]string{},
 	}
 
 	for _, e := range environments {
-		defaults.Names = append(defaults.Names, e)
-		defaults.Tags[e] = []string{fmt.Sprintf("environment:%s", e)}
-		defaults.Variables[e] = []Variable{{Key: "environment", Value: e, Category: "terraform"}}
+		defaults.Environments = append(defaults.Environments, e)
+		defaults.EnvironmentsTags[e] = []string{fmt.Sprintf("environment:%s", e)}
+		defaults.EnvironmentsVariables[e] = []Variable{{Key: "environment", Value: e, Category: "terraform"}}
 	}
 
 	return defaults

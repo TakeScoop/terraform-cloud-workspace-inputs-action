@@ -7,9 +7,9 @@ import (
 )
 
 type Inputs struct {
-	Environments string
-	Tags         string
-	Variables    string
+	Environments          string
+	EnvironmentsTags      string
+	EnvironmentsVariables string
 }
 
 func (i Inputs) Parse() (Config, error) {
@@ -19,7 +19,7 @@ func (i Inputs) Parse() (Config, error) {
 	}
 
 	var wsVars map[string][]Variable
-	if err := yaml.Unmarshal([]byte(i.Variables), &wsVars); err != nil {
+	if err := yaml.Unmarshal([]byte(i.EnvironmentsVariables), &wsVars); err != nil {
 		return Config{}, fmt.Errorf("failed to parse workspace variables: %w", err)
 	}
 
@@ -36,7 +36,7 @@ func (i Inputs) Parse() (Config, error) {
 	}
 
 	var wsTags map[string][]string
-	if err := yaml.Unmarshal([]byte(i.Tags), &wsTags); err != nil {
+	if err := yaml.Unmarshal([]byte(i.EnvironmentsTags), &wsTags); err != nil {
 		return Config{}, fmt.Errorf("failed to parse workspace tags: %w", err)
 	}
 
@@ -53,8 +53,8 @@ func (i Inputs) Parse() (Config, error) {
 	}
 
 	return Config{
-		Names:     environments,
-		Variables: wsVars,
-		Tags:      wsTags,
+		Environments:          environments,
+		EnvironmentsVariables: wsVars,
+		EnvironmentsTags:      wsTags,
 	}, nil
 }
