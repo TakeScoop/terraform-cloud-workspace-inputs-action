@@ -25,9 +25,13 @@ outputs:
   workspaces:
     description: Workspaces
   workspace_tags:
-    description: Workspace tags
+    description: Map of environments to tags for that environment
   workspace_variables:
-    description: Workspace variables
+    description: Map of environments to variables for that environment
+  tags:
+    description: Tags applied to all workspaces
+  name:
+    description: Workspace name, or prefix with a multi-environment configuration
 runs:
   using: docker
   image: Dockerfile   
