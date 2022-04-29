@@ -42,7 +42,7 @@ function test({name, tags, workspaces, workspaceTags, workspaceVariables}) {
       test: 'tags output',
       message: 'tags list does not equal the expected output',
       actual: tags,
-      expected: [`source:${name}`],
+      expected: [`service:${name}`],
     },
   ]
 

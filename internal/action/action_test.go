@@ -56,7 +56,7 @@ func TestRun(t *testing.T) {
 					"workspaces":          `[]`,
 					"workspace_tags":      `{}`,
 					"workspace_variables": `{}`,
-					"tags":                `["source:empty"]`,
+					"tags":                `["service:empty"]`,
 					"name":                "empty",
 				},
 				masked: []string{},
@@ -76,7 +76,7 @@ func TestRun(t *testing.T) {
 					"workspaces":          `[]`,
 					"workspace_tags":      `{}`,
 					"workspace_variables": `{}`,
-					"tags":                `["source:empty"]`,
+					"tags":                `["service:empty"]`,
 					"name":                "empty",
 				},
 				masked: []string{},
@@ -112,7 +112,7 @@ staging:
 							{"key": "environment", "value": "production", "category": "terraform"}
 						]
 					}`,
-					"tags": `["source:workspace"]`,
+					"tags": `["service:workspace"]`,
 					"name": "workspace",
 				},
 				masked: []string{"masked"},
@@ -146,7 +146,7 @@ staging:
 							{"key": "environment", "value": "production", "category": "terraform"}
 						]
 					}`,
-					"tags": `["source:workspace"]`,
+					"tags": `["service:workspace"]`,
 					"name": "workspace",
 				},
 				masked: []string{},
@@ -164,7 +164,7 @@ staging:
 					"workspaces":          `[]`,
 					"workspace_tags":      `{}`,
 					"workspace_variables": `{}`,
-					"tags":                `["foo:bar","source:workspace"]`,
+					"tags":                `["foo:bar","service:workspace"]`,
 					"name":                "workspace",
 				},
 				masked: []string{},

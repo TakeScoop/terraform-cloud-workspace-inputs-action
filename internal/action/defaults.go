@@ -11,7 +11,7 @@ func NewDefaults(environments []string, name string) Config {
 		defaults.EnvironmentsVariables[e] = []Variable{{Key: "environment", Value: e, Category: "terraform"}}
 	}
 
-	defaults.Tags = append(defaults.Tags, fmt.Sprintf("source:%s", name))
+	defaults.Tags = append(defaults.Tags, fmt.Sprintf("service:%s", name))
 
 	return defaults
 }
