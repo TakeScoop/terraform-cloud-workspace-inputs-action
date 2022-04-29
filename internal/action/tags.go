@@ -56,8 +56,20 @@ func mergeTags(a Tags, b Tags) Tags {
 	return out
 }
 
-func mergeEnvironmentsTags(a EnvironmentsTags, b EnvironmentsTags, envs Environments) EnvironmentsTags {
+func (et EnvironmentsTags) environments() Environments {
+	envs := Environments{}
+
+	for e := range et {
+		envs = append(envs, e)
+	}
+
+	return envs
+}
+
+func mergeEnvironmentsTags(a EnvironmentsTags, b EnvironmentsTags) EnvironmentsTags {
 	out := EnvironmentsTags{}
+
+	envs := MergeEnvironments(a.environments(), b.environments())
 
 	for _, e := range envs {
 		out[e] = []string{}

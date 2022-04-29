@@ -20,26 +20,6 @@ type testCaseRunExpected struct {
 	masked  []string
 }
 
-type testOutputter struct {
-	outputs map[string]string
-	masked  []string
-}
-
-func (o *testOutputter) SetOutput(k string, v string) {
-	o.outputs[k] = v
-}
-
-func (o *testOutputter) AddMask(p string) {
-	o.masked = append(o.masked, p)
-}
-
-func newTestOutputter() testOutputter {
-	return testOutputter{
-		outputs: map[string]string{},
-		masked:  []string{},
-	}
-}
-
 func TestRun(t *testing.T) {
 	testCases := []testCaseRun{
 		{
@@ -83,29 +63,40 @@ func TestRun(t *testing.T) {
 			},
 		},
 		{
-			message: "environments",
+			message: "single workspace",
+			input: Inputs{
+				Name:         "workspace",
+				Environments: "",
+			},
+			expected: testCaseRunExpected{
+				outputs: map[string]string{
+					"workspaces":          `[]`,
+					"workspace_tags":      `{}`,
+					"workspace_variables": `{}`,
+					"tags":                `["service:workspace"]`,
+					"name":                "workspace",
+				},
+				masked: []string{},
+			},
+		},
+		{
+			message: "multi-environment workspace",
 			input: Inputs{
 				Name: "workspace",
 				Environments: `---
 - staging
-- production`,
-				EnvironmentsVariables: `---
-staging:
-- key: secret
-  value: masked				
-  category: terraform
-  sensitive: true`,
+- production
+`,
 			},
 			expected: testCaseRunExpected{
 				outputs: map[string]string{
-					"workspaces": `["staging", "production"]`,
+					"workspaces": `["staging","production"]`,
 					"workspace_tags": `{
 						"staging": ["environment:staging"],
 						"production": ["environment:production"]
 					}`,
 					"workspace_variables": `{
 						"staging": [
-							{"key": "secret", "value": "masked", "category": "terraform", "sensitive": true},
 							{"key": "environment", "value": "staging", "category": "terraform"}
 						],
 						"production": [
@@ -115,7 +106,7 @@ staging:
 					"tags": `["service:workspace"]`,
 					"name": "workspace",
 				},
-				masked: []string{"masked"},
+				masked: []string{},
 			},
 		},
 		{

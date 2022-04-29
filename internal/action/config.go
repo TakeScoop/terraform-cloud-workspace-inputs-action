@@ -36,13 +36,13 @@ func NewConfig(name string) Config {
 
 // ExtendConfig takes two Config structs and extends the values in a with values from b, removing duplicates
 func ExtendConfig(a Config, b Config) Config {
-	envs := mergeEnvironments(a.Environments, b.Environments)
+	envs := MergeEnvironments(a.Environments, b.Environments)
 
 	return Config{
 		Name:                  a.Name,
 		Environments:          envs,
-		EnvironmentsVariables: mergeEnvironmentsVariables(a.EnvironmentsVariables, b.EnvironmentsVariables, envs),
-		EnvironmentsTags:      mergeEnvironmentsTags(a.EnvironmentsTags, b.EnvironmentsTags, envs),
+		EnvironmentsVariables: mergeEnvironmentsVariables(a.EnvironmentsVariables, b.EnvironmentsVariables),
+		EnvironmentsTags:      mergeEnvironmentsTags(a.EnvironmentsTags, b.EnvironmentsTags),
 		Tags:                  mergeTags(a.Tags, b.Tags),
 	}
 }

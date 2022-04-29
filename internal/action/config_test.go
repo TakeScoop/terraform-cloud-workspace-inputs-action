@@ -15,56 +15,6 @@ type testCaseExtendConfig struct {
 func TestExtendConfig(t *testing.T) {
 	testCases := []testCaseExtendConfig{
 		{
-			message: "no tags",
-			input: [2]Config{
-				{Environments: []string{"staging"}},
-				{},
-			},
-			expected: Config{
-				Environments:          []string{"staging"},
-				EnvironmentsTags:      map[string][]string{"staging": {}},
-				EnvironmentsVariables: map[string][]Variable{"staging": {}},
-			},
-		},
-		{
-			message: "dedupe workspace tags",
-			input: [2]Config{
-				{
-					Environments:     []string{"staging"},
-					EnvironmentsTags: map[string][]string{"staging": {"environment:staging"}},
-				},
-				{EnvironmentsTags: map[string][]string{"staging": {"environment:staging"}}},
-			},
-			expected: Config{
-				Environments:          []string{"staging"},
-				EnvironmentsTags:      map[string][]string{"staging": {"environment:staging"}},
-				EnvironmentsVariables: map[string][]Variable{"staging": {}},
-			},
-		},
-		{
-			message: "dedupe variables",
-			input: [2]Config{
-				{
-					Environments: []string{"staging"},
-					EnvironmentsVariables: map[string][]Variable{
-						"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
-					},
-				},
-				{
-					EnvironmentsVariables: map[string][]Variable{
-						"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
-					},
-				},
-			},
-			expected: Config{
-				Environments:     []string{"staging"},
-				EnvironmentsTags: map[string][]string{"staging": {}},
-				EnvironmentsVariables: map[string][]Variable{
-					"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
-				},
-			},
-		},
-		{
 			message: "extend default",
 			input: [2]Config{
 				{
@@ -124,36 +74,6 @@ func TestExtendConfig(t *testing.T) {
 				{Name: "b"},
 			},
 			expected: Config{Name: "a"},
-		},
-		{
-			message: "add tags to empty config",
-			input: [2]Config{
-				{},
-				{Tags: []string{"foo:bar"}},
-			},
-			expected: Config{
-				Tags: []string{"foo:bar"},
-			},
-		},
-		{
-			message: "dedupe tags from same config",
-			input: [2]Config{
-				{},
-				{Tags: []string{"foo:bar", "foo:bar"}},
-			},
-			expected: Config{
-				Tags: []string{"foo:bar"},
-			},
-		},
-		{
-			message: "dedupe tags from different configs",
-			input: [2]Config{
-				{Tags: []string{"foo:bar"}},
-				{Tags: []string{"foo:bar"}},
-			},
-			expected: Config{
-				Tags: []string{"foo:bar"},
-			},
 		},
 	}
 

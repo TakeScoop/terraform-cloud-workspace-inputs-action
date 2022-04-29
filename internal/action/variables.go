@@ -37,8 +37,20 @@ func ParseEnvironmentsVariables(s string, envs Environments) (EnvironmentsVariab
 	return wsVars, nil
 }
 
-func mergeEnvironmentsVariables(a EnvironmentsVariables, b EnvironmentsVariables, envs Environments) EnvironmentsVariables {
+func (ev EnvironmentsVariables) environments() Environments {
+	envs := Environments{}
+
+	for e := range ev {
+		envs = append(envs, e)
+	}
+
+	return envs
+}
+
+func mergeEnvironmentsVariables(a EnvironmentsVariables, b EnvironmentsVariables) EnvironmentsVariables {
 	out := EnvironmentsVariables{}
+
+	envs := MergeEnvironments(a.environments(), b.environments())
 
 	for _, e := range envs {
 		out[e] = []Variable{}

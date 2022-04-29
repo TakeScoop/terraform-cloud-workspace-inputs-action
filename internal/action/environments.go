@@ -18,7 +18,7 @@ func ParseEnvironments(s string) (Environments, error) {
 	return environments, nil
 }
 
-func mergeEnvironments(a Environments, b Environments) Environments {
+func MergeEnvironments(a Environments, b Environments) Environments {
 	out := Environments{}
 
 	eMap := map[string]bool{}
@@ -35,4 +35,18 @@ func mergeEnvironments(a Environments, b Environments) Environments {
 
 func (e Environments) setOutputs(o Outputter) error {
 	return setJSONOutput(o, "workspaces", e)
+}
+
+func EnvironmentsFromKeys(a map[string]any, b map[string]any) Environments {
+	e1 := Environments{}
+	for k := range a {
+		e1 = append(e1, k)
+	}
+
+	e2 := Environments{}
+	for k := range b {
+		e2 = append(e2, k)
+	}
+
+	return MergeEnvironments(e1, e2)
 }

@@ -18,6 +18,26 @@ type testSetOutputsExpected struct {
 	masked  []string
 }
 
+type testOutputter struct {
+	outputs map[string]string
+	masked  []string
+}
+
+func (o *testOutputter) SetOutput(k string, v string) {
+	o.outputs[k] = v
+}
+
+func (o *testOutputter) AddMask(p string) {
+	o.masked = append(o.masked, p)
+}
+
+func newTestOutputter() testOutputter {
+	return testOutputter{
+		outputs: map[string]string{},
+		masked:  []string{},
+	}
+}
+
 func TestOutputsFromInputs(t *testing.T) {
 	testCases := []testCaseOutputsFromInputs{
 		{

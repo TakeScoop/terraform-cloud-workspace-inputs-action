@@ -10,6 +10,7 @@ type testCaseNewDefaults struct {
 	message  string
 	input    Config
 	expected Config
+	err      error
 }
 
 func TestNewDefaults(t *testing.T) {
