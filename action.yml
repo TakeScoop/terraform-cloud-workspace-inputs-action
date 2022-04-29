@@ -13,13 +13,25 @@ inputs:
     required: false
     description: A YAML encoded map of environment names to a list of Terraform Cloud variable objects
     default: ''
+  name:
+    required: false
+    description: Workspace name, or workspace name prefix in the case of a multi-environment configuration
+    default: "${{ github.event.repository.name }}"
+  tags:
+    required: false
+    description: A YAML encoded list of tags that apply to all workspaces
+    default: ''
 outputs:
   workspaces:
     description: Workspaces
   workspace_tags:
-    description: Workspace tags
+    description: Map of environments to tags for that environment
   workspace_variables:
-    description: Workspace variables
+    description: Map of environments to variables for that environment
+  tags:
+    description: Tags applied to all workspaces
+  name:
+    description: Workspace name, or prefix with a multi-environment configuration
 runs:
   using: docker
   image: Dockerfile   

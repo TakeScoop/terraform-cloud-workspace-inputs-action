@@ -22,12 +22,14 @@ func TestOutputsFromInputs(t *testing.T) {
 	testCases := []testCaseOutputsFromInputs{
 		{
 			message: "empty inputs",
-			input:   NewConfig(),
+			input:   NewConfig("empty"),
 			expected: testSetOutputsExpected{
 				outputs: map[string]string{
 					"workspaces":          `[]`,
 					"workspace_variables": `{}`,
 					"workspace_tags":      `{}`,
+					"tags":                `[]`,
+					"name":                "empty",
 				},
 				masked: []string{},
 			},
@@ -44,6 +46,8 @@ func TestOutputsFromInputs(t *testing.T) {
 					"staging":    {{Key: "environment", Value: "staging", Category: "terraform"}},
 					"production": {{Key: "environment", Value: "production", Category: "terraform"}},
 				},
+				Tags: []string{"service:workspace"},
+				Name: "workspace",
 			},
 			expected: testSetOutputsExpected{
 				outputs: map[string]string{
@@ -67,6 +71,8 @@ func TestOutputsFromInputs(t *testing.T) {
 						"staging": ["environment:staging"],
 						"production": ["environment:production"]
 					}`,
+					"name": "workspace",
+					"tags": `["service:workspace"]`,
 				},
 				masked: []string{},
 			},
@@ -86,7 +92,11 @@ func TestOutputsFromInputs(t *testing.T) {
 			assert.ElementsMatch(t, tc.expected.masked, out.masked)
 
 			for k, v := range tc.expected.outputs {
-				assert.JSONEq(t, v, out.outputs[k])
+				if k == "name" {
+					assert.Equal(t, v, out.outputs["name"])
+				} else {
+					assert.JSONEq(t, v, out.outputs[k])
+				}
 			}
 		})
 	}

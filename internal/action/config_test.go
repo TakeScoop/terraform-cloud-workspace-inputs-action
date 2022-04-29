@@ -6,14 +6,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type testCaseMergeConfigs struct {
+type testCaseExtendConfig struct {
 	message  string
 	input    [2]Config
 	expected Config
 }
 
-func TestMergeConfig(t *testing.T) {
-	testCases := []testCaseMergeConfigs{
+func TestExtendConfig(t *testing.T) {
+	testCases := []testCaseExtendConfig{
 		{
 			message: "no tags",
 			input: [2]Config{
@@ -117,6 +117,44 @@ func TestMergeConfig(t *testing.T) {
 				},
 			},
 		},
+		{
+			message: "use name from first config",
+			input: [2]Config{
+				{Name: "a"},
+				{Name: "b"},
+			},
+			expected: Config{Name: "a"},
+		},
+		{
+			message: "add tags to empty config",
+			input: [2]Config{
+				{},
+				{Tags: []string{"foo:bar"}},
+			},
+			expected: Config{
+				Tags: []string{"foo:bar"},
+			},
+		},
+		{
+			message: "dedupe tags from same config",
+			input: [2]Config{
+				{},
+				{Tags: []string{"foo:bar", "foo:bar"}},
+			},
+			expected: Config{
+				Tags: []string{"foo:bar"},
+			},
+		},
+		{
+			message: "dedupe tags from different configs",
+			input: [2]Config{
+				{Tags: []string{"foo:bar"}},
+				{Tags: []string{"foo:bar"}},
+			},
+			expected: Config{
+				Tags: []string{"foo:bar"},
+			},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -125,8 +163,12 @@ func TestMergeConfig(t *testing.T) {
 		t.Run(tc.message, func(t *testing.T) {
 			t.Parallel()
 
-			actual := MergeConfigs(tc.input[0], tc.input[1])
+			actual := ExtendConfig(tc.input[0], tc.input[1])
+
+			assert.Equal(t, tc.expected.Name, actual.Name)
+
 			assert.ElementsMatch(t, tc.expected.Environments, actual.Environments)
+			assert.ElementsMatch(t, tc.expected.Tags, actual.Tags)
 
 			for _, e := range actual.Environments {
 				assert.ElementsMatch(t, tc.expected.EnvironmentsTags[e], actual.EnvironmentsTags[e])

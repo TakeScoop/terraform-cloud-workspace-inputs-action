@@ -10,6 +10,8 @@ func main() {
 		Environments:          githubactions.GetInput("environments"),
 		EnvironmentsVariables: githubactions.GetInput("environments_variables"),
 		EnvironmentsTags:      githubactions.GetInput("environments_tags"),
+		Name:                  githubactions.GetInput("name"),
+		Tags:                  githubactions.GetInput("tags"),
 	}, githubactions.New()); err != nil {
 		githubactions.Fatalf("Error: %s", err)
 	}
