@@ -38,7 +38,7 @@ func TestOutputsFromInputs(t *testing.T) {
 			message: "default inputs",
 			input: Config{
 				Environments: Environments{"staging", "production"},
-				EnvironmentsTags: map[string][]string{
+				EnvironmentsTags: EnvironmentsTags{
 					"staging":    {"environment:staging"},
 					"production": {"environment:production"},
 				},
@@ -46,7 +46,7 @@ func TestOutputsFromInputs(t *testing.T) {
 					"staging":    {{Key: "environment", Value: "staging", Category: "terraform"}},
 					"production": {{Key: "environment", Value: "production", Category: "terraform"}},
 				},
-				Tags: []string{"service:workspace"},
+				Tags: Tags{"service:workspace"},
 				Name: "workspace",
 			},
 			expected: testSetOutputsExpected{

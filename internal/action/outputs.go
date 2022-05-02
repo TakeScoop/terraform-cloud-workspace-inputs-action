@@ -6,12 +6,16 @@ import (
 )
 
 func (c Config) SetOutputs(o Outputter) error {
-	if err := setJSONOutput(o, "workspaces", c.Environments); err != nil {
-		return err
+	if err := c.Environments.SetOutputs(o); err != nil {
+		return fmt.Errorf("failed to set environments output: %w", err)
 	}
 
-	if err := setJSONOutput(o, "workspace_tags", c.EnvironmentsTags); err != nil {
-		return err
+	if err := c.EnvironmentsTags.SetOutputs(o); err != nil {
+		return fmt.Errorf("failed to set environment tags output: %w", err)
+	}
+
+	if err := c.Tags.SetOutputs(o); err != nil {
+		return fmt.Errorf("failed to set tags output: %w", err)
 	}
 
 	for _, vars := range c.EnvironmentsVariables {
@@ -27,10 +31,6 @@ func (c Config) SetOutputs(o Outputter) error {
 	}
 
 	o.SetOutput("name", c.Name)
-
-	if err := setJSONOutput(o, "tags", c.Tags); err != nil {
-		return err
-	}
 
 	return nil
 }
