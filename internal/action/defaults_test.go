@@ -16,21 +16,21 @@ func TestNewDefaults(t *testing.T) {
 	testCases := []testCaseNewDefaults{
 		{
 			message: "empty environments",
-			input:   NewDefaults([]string{}, "empty"),
+			input:   NewDefaults(Environments{}, "empty"),
 			expected: Config{
 				Environments:          Environments{},
-				EnvironmentsTags:      map[string][]string{},
+				EnvironmentsTags:      EnvironmentsTags{},
 				EnvironmentsVariables: map[string][]Variable{},
-				Tags:                  []string{"service:empty"},
+				Tags:                  Tags{"service:empty"},
 				Name:                  "empty",
 			},
 		},
 		{
 			message: "environments",
-			input:   NewDefaults([]string{"staging", "production"}, "name"),
+			input:   NewDefaults(Environments{"staging", "production"}, "name"),
 			expected: Config{
 				Environments: Environments{"staging", "production"},
-				EnvironmentsTags: map[string][]string{
+				EnvironmentsTags: EnvironmentsTags{
 					"staging":    {"environment:staging"},
 					"production": {"environment:production"},
 				},
@@ -38,7 +38,7 @@ func TestNewDefaults(t *testing.T) {
 					"staging":    {{Key: "environment", Value: "staging", Category: "terraform"}},
 					"production": {{Key: "environment", Value: "production", Category: "terraform"}},
 				},
-				Tags: []string{"service:name"},
+				Tags: Tags{"service:name"},
 				Name: "name",
 			},
 		},

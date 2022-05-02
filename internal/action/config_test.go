@@ -15,33 +15,6 @@ type testCaseExtendConfig struct {
 func TestExtendConfig(t *testing.T) {
 	testCases := []testCaseExtendConfig{
 		{
-			message: "no tags",
-			input: [2]Config{
-				{Environments: Environments{"staging"}},
-				{},
-			},
-			expected: Config{
-				Environments:          Environments{"staging"},
-				EnvironmentsTags:      map[string][]string{"staging": {}},
-				EnvironmentsVariables: map[string][]Variable{"staging": {}},
-			},
-		},
-		{
-			message: "dedupe workspace tags",
-			input: [2]Config{
-				{
-					Environments:     Environments{"staging"},
-					EnvironmentsTags: map[string][]string{"staging": {"environment:staging"}},
-				},
-				{EnvironmentsTags: map[string][]string{"staging": {"environment:staging"}}},
-			},
-			expected: Config{
-				Environments:          Environments{"staging"},
-				EnvironmentsTags:      map[string][]string{"staging": {"environment:staging"}},
-				EnvironmentsVariables: map[string][]Variable{"staging": {}},
-			},
-		},
-		{
 			message: "dedupe variables",
 			input: [2]Config{
 				{
@@ -58,7 +31,7 @@ func TestExtendConfig(t *testing.T) {
 			},
 			expected: Config{
 				Environments:     Environments{"staging"},
-				EnvironmentsTags: map[string][]string{"staging": {}},
+				EnvironmentsTags: EnvironmentsTags{"staging": {}},
 				EnvironmentsVariables: map[string][]Variable{
 					"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
 				},
@@ -77,7 +50,7 @@ func TestExtendConfig(t *testing.T) {
 							{Key: "environment", Value: "production", Category: "terraform"},
 						},
 					},
-					EnvironmentsTags: map[string][]string{
+					EnvironmentsTags: EnvironmentsTags{
 						"staging":    {"environment:staging"},
 						"production": {"environment:production"},
 					},
@@ -93,7 +66,7 @@ func TestExtendConfig(t *testing.T) {
 							{Key: "baz", Value: "woz", Category: "terraform"},
 						},
 					},
-					EnvironmentsTags: map[string][]string{
+					EnvironmentsTags: EnvironmentsTags{
 						"staging":    {"foo:bar"},
 						"production": {"environment:production", "baz:woz"},
 					},
@@ -111,7 +84,7 @@ func TestExtendConfig(t *testing.T) {
 						{Key: "baz", Value: "woz", Category: "terraform"},
 					},
 				},
-				EnvironmentsTags: map[string][]string{
+				EnvironmentsTags: EnvironmentsTags{
 					"staging":    {"environment:staging", "foo:bar"},
 					"production": {"environment:production", "baz:woz"},
 				},
@@ -124,36 +97,6 @@ func TestExtendConfig(t *testing.T) {
 				{Name: "b"},
 			},
 			expected: Config{Name: "a"},
-		},
-		{
-			message: "add tags to empty config",
-			input: [2]Config{
-				{},
-				{Tags: []string{"foo:bar"}},
-			},
-			expected: Config{
-				Tags: []string{"foo:bar"},
-			},
-		},
-		{
-			message: "dedupe tags from same config",
-			input: [2]Config{
-				{},
-				{Tags: []string{"foo:bar", "foo:bar"}},
-			},
-			expected: Config{
-				Tags: []string{"foo:bar"},
-			},
-		},
-		{
-			message: "dedupe tags from different configs",
-			input: [2]Config{
-				{Tags: []string{"foo:bar"}},
-				{Tags: []string{"foo:bar"}},
-			},
-			expected: Config{
-				Tags: []string{"foo:bar"},
-			},
 		},
 	}
 

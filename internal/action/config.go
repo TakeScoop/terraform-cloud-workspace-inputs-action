@@ -15,13 +15,13 @@ type Config struct {
 	//EnvironmentsVariables hold variables for specific environments
 	EnvironmentsVariables map[string][]Variable
 	// EnvironmentsTags hold tags for specific environments
-	EnvironmentsTags map[string][]string
+	EnvironmentsTags EnvironmentsTags
 	// Environments entires indicate that one workspace should be created per environment
 	Environments Environments
 	// Name represents the workspace name, or a workspace prefix in a multi environment configuration
 	Name string
 	// Tags are universally applied to all managed workspaces
-	Tags []string
+	Tags Tags
 }
 
 // NewConfig returns an empty Config struct
@@ -29,42 +29,22 @@ func NewConfig(name string) Config {
 	return Config{
 		Environments:          Environments{},
 		EnvironmentsVariables: map[string][]Variable{},
-		EnvironmentsTags:      map[string][]string{},
-		Tags:                  []string{},
+		EnvironmentsTags:      EnvironmentsTags{},
+		Tags:                  Tags{},
 		Name:                  name,
 	}
 }
 
 // ExtendConfig takes two Config structs and extends the values in a with values from b, removing duplicates
 func ExtendConfig(a Config, b Config) Config {
-	merged := NewConfig(a.Name)
-
 	envs := MergeEnvironments(a.Environments, b.Environments)
 
-	merged.Environments = envs
-
-	for _, e := range envs {
-		merged.EnvironmentsTags[e] = []string{}
-
-		tagMap := map[string]bool{}
-
-		if aTags, ok := a.EnvironmentsTags[e]; ok {
-			for _, t := range aTags {
-				if _, ok := tagMap[t]; !ok {
-					merged.EnvironmentsTags[e] = append(merged.EnvironmentsTags[e], t)
-					tagMap[t] = true
-				}
-			}
-		}
-
-		if bTags, ok := b.EnvironmentsTags[e]; ok {
-			for _, t := range bTags {
-				if _, ok := tagMap[t]; !ok {
-					merged.EnvironmentsTags[e] = append(merged.EnvironmentsTags[e], t)
-					tagMap[t] = true
-				}
-			}
-		}
+	merged := Config{
+		Name:                  a.Name,
+		Environments:          envs,
+		Tags:                  MergeTags(a.Tags, b.Tags),
+		EnvironmentsTags:      MergeEnvironmentsTags(a.EnvironmentsTags, b.EnvironmentsTags),
+		EnvironmentsVariables: map[string][]Variable{},
 	}
 
 	for _, e := range envs {
@@ -88,14 +68,6 @@ func ExtendConfig(a Config, b Config) Config {
 					varMap[fmt.Sprintf("%s-%s", v.Key, v.Category)] = v
 				}
 			}
-		}
-	}
-
-	tMap := map[string]bool{}
-	for _, t := range append(a.Tags, b.Tags...) {
-		if _, ok := tMap[t]; !ok {
-			tMap[t] = true
-			merged.Tags = append(merged.Tags, t)
 		}
 	}
 

@@ -27,59 +27,6 @@ func TestInputsParse(t *testing.T) {
 			expected: Config{Name: "empty"},
 		},
 		{
-			message: "basic workspace tags",
-			input: Inputs{
-				Name: "workspace",
-				EnvironmentsTags: `---
-staging:
-  - foo:bar
-production:
-  - baz:woz`,
-				Environments: `---
-  - staging
-  - production`,
-			},
-			expected: Config{
-				Name:         "workspace",
-				Environments: Environments{"staging", "production"},
-				EnvironmentsTags: map[string][]string{
-					"staging":    {"foo:bar"},
-					"production": {"baz:woz"},
-				},
-			},
-		},
-		{
-			message: "tags for one environment",
-			input: Inputs{
-				Name: "workspace",
-				Environments: `---
-  - staging
-  - production`,
-				EnvironmentsTags: `---
-staging:
-  - foo:bar`,
-			},
-			expected: Config{
-				Name:         "workspace",
-				Environments: Environments{"staging", "production"},
-				EnvironmentsTags: map[string][]string{
-					"staging": {"foo:bar"},
-				},
-			},
-		},
-		{
-			message: "tags non existent environment",
-			input: Inputs{
-				Name: "workspace",
-				Environments: `---
-- production`,
-				EnvironmentsTags: `---
-staging:
-  - foo:bar`,
-			},
-			err: ErrEnvironmentNotFound,
-		},
-		{
 			message: "basic variables",
 			input: Inputs{
 				Name: "workspace",
@@ -144,19 +91,6 @@ staging:
 			message:  "workspace name",
 			input:    Inputs{Name: "foo"},
 			expected: Config{Name: "foo"},
-		},
-		{
-			message: "tags",
-			input: Inputs{
-				Name: "workspace",
-				Tags: `---
-- department:engineering
-- division:platform`,
-			},
-			expected: Config{
-				Name: "workspace",
-				Tags: []string{"department:engineering", "division:platform"},
-			},
 		},
 	}
 

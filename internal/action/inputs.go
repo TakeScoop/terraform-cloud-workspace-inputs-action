@@ -47,26 +47,14 @@ func (i Inputs) Parse() (Config, error) {
 		}
 	}
 
-	var wsTags map[string][]string
-	if err := yaml.Unmarshal([]byte(i.EnvironmentsTags), &wsTags); err != nil {
-		return Config{}, fmt.Errorf("failed to parse workspace tags: %w", err)
+	wsTags, err := ParseEnvironmentsTags(i.EnvironmentsTags, environments)
+	if err != nil {
+		return Config{}, err
 	}
 
-	for env := range wsTags {
-		found := false
-		for _, e := range environments {
-			if e == env {
-				found = true
-			}
-		}
-		if !found {
-			return Config{}, fmt.Errorf("environment %s in passed variables not found in environments %v: %w", env, environments, ErrEnvironmentNotFound)
-		}
-	}
-
-	var tags []string
-	if err := yaml.Unmarshal([]byte(i.Tags), &tags); err != nil {
-		return Config{}, fmt.Errorf("failed to parse tags: %w", err)
+	tags, err := ParseTags(i.Tags)
+	if err != nil {
+		return Config{}, err
 	}
 
 	return Config{
