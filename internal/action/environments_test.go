@@ -112,7 +112,7 @@ func TestSetOutputs(t *testing.T) {
 		t.Run(tc.message, func(t *testing.T) {
 			out := newTestOutputter()
 
-			tc.input.SetOutputs(&out)
+			require.NoError(t, tc.input.SetOutputs(&out))
 
 			assert.JSONEq(t, tc.expected, out.outputs["workspaces"])
 		})
