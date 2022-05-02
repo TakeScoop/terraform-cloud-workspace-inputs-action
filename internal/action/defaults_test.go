@@ -18,7 +18,7 @@ func TestNewDefaults(t *testing.T) {
 			message: "empty environments",
 			input:   NewDefaults([]string{}, "empty"),
 			expected: Config{
-				Environments:          []string{},
+				Environments:          Environments{},
 				EnvironmentsTags:      map[string][]string{},
 				EnvironmentsVariables: map[string][]Variable{},
 				Tags:                  []string{"service:empty"},
@@ -29,7 +29,7 @@ func TestNewDefaults(t *testing.T) {
 			message: "environments",
 			input:   NewDefaults([]string{"staging", "production"}, "name"),
 			expected: Config{
-				Environments: []string{"staging", "production"},
+				Environments: Environments{"staging", "production"},
 				EnvironmentsTags: map[string][]string{
 					"staging":    {"environment:staging"},
 					"production": {"environment:production"},

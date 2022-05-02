@@ -17,11 +17,11 @@ func TestExtendConfig(t *testing.T) {
 		{
 			message: "no tags",
 			input: [2]Config{
-				{Environments: []string{"staging"}},
+				{Environments: Environments{"staging"}},
 				{},
 			},
 			expected: Config{
-				Environments:          []string{"staging"},
+				Environments:          Environments{"staging"},
 				EnvironmentsTags:      map[string][]string{"staging": {}},
 				EnvironmentsVariables: map[string][]Variable{"staging": {}},
 			},
@@ -30,13 +30,13 @@ func TestExtendConfig(t *testing.T) {
 			message: "dedupe workspace tags",
 			input: [2]Config{
 				{
-					Environments:     []string{"staging"},
+					Environments:     Environments{"staging"},
 					EnvironmentsTags: map[string][]string{"staging": {"environment:staging"}},
 				},
 				{EnvironmentsTags: map[string][]string{"staging": {"environment:staging"}}},
 			},
 			expected: Config{
-				Environments:          []string{"staging"},
+				Environments:          Environments{"staging"},
 				EnvironmentsTags:      map[string][]string{"staging": {"environment:staging"}},
 				EnvironmentsVariables: map[string][]Variable{"staging": {}},
 			},
@@ -45,7 +45,7 @@ func TestExtendConfig(t *testing.T) {
 			message: "dedupe variables",
 			input: [2]Config{
 				{
-					Environments: []string{"staging"},
+					Environments: Environments{"staging"},
 					EnvironmentsVariables: map[string][]Variable{
 						"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
 					},
@@ -57,7 +57,7 @@ func TestExtendConfig(t *testing.T) {
 				},
 			},
 			expected: Config{
-				Environments:     []string{"staging"},
+				Environments:     Environments{"staging"},
 				EnvironmentsTags: map[string][]string{"staging": {}},
 				EnvironmentsVariables: map[string][]Variable{
 					"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
@@ -68,7 +68,7 @@ func TestExtendConfig(t *testing.T) {
 			message: "extend default",
 			input: [2]Config{
 				{
-					Environments: []string{"staging", "production"},
+					Environments: Environments{"staging", "production"},
 					EnvironmentsVariables: map[string][]Variable{
 						"staging": {
 							{Key: "environment", Value: "staging", Category: "terraform"},
@@ -83,7 +83,7 @@ func TestExtendConfig(t *testing.T) {
 					},
 				},
 				{
-					Environments: []string{"staging", "production"},
+					Environments: Environments{"staging", "production"},
 					EnvironmentsVariables: map[string][]Variable{
 						"staging": {
 							{Key: "environment", Value: "staging", Category: "terraform"},
@@ -100,7 +100,7 @@ func TestExtendConfig(t *testing.T) {
 				},
 			},
 			expected: Config{
-				Environments: []string{"staging", "production"},
+				Environments: Environments{"staging", "production"},
 				EnvironmentsVariables: map[string][]Variable{
 					"staging": {
 						{Key: "environment", Value: "staging", Category: "terraform"},

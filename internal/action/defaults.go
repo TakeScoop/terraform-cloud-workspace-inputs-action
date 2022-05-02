@@ -2,7 +2,7 @@ package action
 
 import "fmt"
 
-func NewDefaults(environments []string, name string) Config {
+func NewDefaults(environments Environments, name string) Config {
 	defaults := NewConfig(name)
 
 	for _, e := range environments {

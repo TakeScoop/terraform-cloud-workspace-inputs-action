@@ -27,19 +27,6 @@ func TestInputsParse(t *testing.T) {
 			expected: Config{Name: "empty"},
 		},
 		{
-			message: "basic environments",
-			input: Inputs{
-				Name: "workspace",
-				Environments: `---
-- staging
-- production`,
-			},
-			expected: Config{
-				Name:         "workspace",
-				Environments: []string{"staging", "production"},
-			},
-		},
-		{
 			message: "basic workspace tags",
 			input: Inputs{
 				Name: "workspace",
@@ -54,7 +41,7 @@ production:
 			},
 			expected: Config{
 				Name:         "workspace",
-				Environments: []string{"staging", "production"},
+				Environments: Environments{"staging", "production"},
 				EnvironmentsTags: map[string][]string{
 					"staging":    {"foo:bar"},
 					"production": {"baz:woz"},
@@ -74,7 +61,7 @@ staging:
 			},
 			expected: Config{
 				Name:         "workspace",
-				Environments: []string{"staging", "production"},
+				Environments: Environments{"staging", "production"},
 				EnvironmentsTags: map[string][]string{
 					"staging": {"foo:bar"},
 				},
@@ -111,7 +98,7 @@ production:
 			},
 			expected: Config{
 				Name:         "workspace",
-				Environments: []string{"staging", "production"},
+				Environments: Environments{"staging", "production"},
 				EnvironmentsVariables: map[string][]Variable{
 					"staging":    {{Key: "foo", Value: "bar", Category: "terraform"}},
 					"production": {{Key: "baz", Value: "woz", Category: "terraform"}},
@@ -133,7 +120,7 @@ staging:
 			},
 			expected: Config{
 				Name:         "workspace",
-				Environments: []string{"staging", "production"},
+				Environments: Environments{"staging", "production"},
 				EnvironmentsVariables: map[string][]Variable{
 					"staging": {{Key: "foo", Value: "bar", Category: "terraform"}},
 				},
