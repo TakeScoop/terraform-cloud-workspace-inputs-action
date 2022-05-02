@@ -37,7 +37,7 @@ func TestOutputsFromInputs(t *testing.T) {
 		{
 			message: "default inputs",
 			input: Config{
-				Environments: []string{"staging", "production"},
+				Environments: Environments{"staging", "production"},
 				EnvironmentsTags: map[string][]string{
 					"staging":    {"environment:staging"},
 					"production": {"environment:production"},

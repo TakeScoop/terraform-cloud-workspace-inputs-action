@@ -25,9 +25,9 @@ func (i Inputs) Parse() (Config, error) {
 		return Config{}, ErrNameNotSet
 	}
 
-	var environments []string
-	if err := yaml.Unmarshal([]byte(i.Environments), &environments); err != nil {
-		return Config{}, fmt.Errorf("failed to parse Names: %w", err)
+	environments, err := ParseEnvironments(i.Environments)
+	if err != nil {
+		return Config{}, err
 	}
 
 	var wsVars map[string][]Variable
