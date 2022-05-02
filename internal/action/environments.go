@@ -33,20 +33,6 @@ func MergeEnvironments(a Environments, b Environments) Environments {
 	return out
 }
 
-func (e Environments) setOutputs(o Outputter) error {
+func (e Environments) SetOutputs(o Outputter) error {
 	return setJSONOutput(o, "workspaces", e)
-}
-
-func EnvironmentsFromKeys(a map[string]any, b map[string]any) Environments {
-	e1 := Environments{}
-	for k := range a {
-		e1 = append(e1, k)
-	}
-
-	e2 := Environments{}
-	for k := range b {
-		e2 = append(e2, k)
-	}
-
-	return MergeEnvironments(e1, e2)
 }

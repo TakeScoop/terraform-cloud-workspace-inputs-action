@@ -86,3 +86,35 @@ func TestParseEnvironments(t *testing.T) {
 		})
 	}
 }
+
+type testCaseEnvironmentsSetOutputs struct {
+	message  string
+	input    Environments
+	expected string
+}
+
+func TestSetOutputs(t *testing.T) {
+	testCases := []testCaseEnvironmentsSetOutputs{
+		{
+			message:  "empty",
+			input:    Environments{},
+			expected: `[]`,
+		},
+		{
+			message:  "empty",
+			input:    Environments{"staging", "production"},
+			expected: `["staging", "production"]`,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.message, func(t *testing.T) {
+			out := newTestOutputter()
+
+			tc.input.SetOutputs(&out)
+
+			assert.JSONEq(t, tc.expected, out.outputs["workspaces"])
+		})
+	}
+}
