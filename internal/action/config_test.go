@@ -19,7 +19,7 @@ func TestExtendConfig(t *testing.T) {
 			input: [2]Config{
 				{
 					Environments: Environments{"staging", "production"},
-					EnvironmentsVariables: map[string][]Variable{
+					EnvironmentsVariables: EnvironmentsVariables{
 						"staging": {
 							{Key: "environment", Value: "staging", Category: "terraform"},
 						},
@@ -34,7 +34,7 @@ func TestExtendConfig(t *testing.T) {
 				},
 				{
 					Environments: Environments{"staging", "production"},
-					EnvironmentsVariables: map[string][]Variable{
+					EnvironmentsVariables: EnvironmentsVariables{
 						"staging": {
 							{Key: "environment", Value: "staging", Category: "terraform"},
 							{Key: "foo", Value: "bar", Category: "env"},
@@ -51,7 +51,7 @@ func TestExtendConfig(t *testing.T) {
 			},
 			expected: Config{
 				Environments: Environments{"staging", "production"},
-				EnvironmentsVariables: map[string][]Variable{
+				EnvironmentsVariables: EnvironmentsVariables{
 					"staging": {
 						{Key: "environment", Value: "staging", Category: "terraform"},
 						{Key: "foo", Value: "bar", Category: "env"},
