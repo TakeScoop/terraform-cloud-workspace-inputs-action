@@ -15,29 +15,6 @@ type testCaseExtendConfig struct {
 func TestExtendConfig(t *testing.T) {
 	testCases := []testCaseExtendConfig{
 		{
-			message: "dedupe variables",
-			input: [2]Config{
-				{
-					Environments: Environments{"staging"},
-					EnvironmentsVariables: map[string][]Variable{
-						"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
-					},
-				},
-				{
-					EnvironmentsVariables: map[string][]Variable{
-						"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
-					},
-				},
-			},
-			expected: Config{
-				Environments:     Environments{"staging"},
-				EnvironmentsTags: EnvironmentsTags{"staging": {}},
-				EnvironmentsVariables: map[string][]Variable{
-					"staging": {{Key: "environment", Value: "staging", Category: "terraform"}},
-				},
-			},
-		},
-		{
 			message: "extend default",
 			input: [2]Config{
 				{

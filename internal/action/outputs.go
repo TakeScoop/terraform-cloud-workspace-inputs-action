@@ -18,16 +18,8 @@ func (c Config) SetOutputs(o Outputter) error {
 		return fmt.Errorf("failed to set tags output: %w", err)
 	}
 
-	for _, vars := range c.EnvironmentsVariables {
-		for _, v := range vars {
-			if v.Sensitive {
-				o.AddMask(v.Value)
-			}
-		}
-	}
-
-	if err := setJSONOutput(o, "workspace_variables", c.EnvironmentsVariables); err != nil {
-		return err
+	if err := c.EnvironmentsVariables.SetOutputs(o); err != nil {
+		return fmt.Errorf("failed to set environment variables output: %w", err)
 	}
 
 	o.SetOutput("name", c.Name)
