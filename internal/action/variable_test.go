@@ -202,7 +202,6 @@ func TestParseEnvironmentsVariables(t *testing.T) {
 				value: "",
 				envs:  Environments{},
 			},
-			expected: EnvironmentsVariables{},
 		},
 		{
 			message: "with values",
