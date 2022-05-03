@@ -181,3 +181,82 @@ func TestEnvironmentsVariablesSetOutput(t *testing.T) {
 		})
 	}
 }
+
+type testCaseParseEnvironmentsVariables struct {
+	message  string
+	input    testCaseParseEnvironmentsVariablesInput
+	expected EnvironmentsVariables
+	err      error
+}
+
+type testCaseParseEnvironmentsVariablesInput struct {
+	value string
+	envs  Environments
+}
+
+func TestParseEnvironmentsVariables(t *testing.T) {
+	testCases := []testCaseParseEnvironmentsVariables{
+		{
+			message: "empty",
+			input: testCaseParseEnvironmentsVariablesInput{
+				value: "",
+				envs:  Environments{},
+			},
+			expected: EnvironmentsVariables{},
+		},
+		{
+			message: "with values",
+			input: testCaseParseEnvironmentsVariablesInput{
+				value: `---
+staging:
+- key: environment
+  value: staging 
+  category: terraform
+production:
+- key: environment
+  value: production
+  category: terraform`,
+				envs: Environments{"staging", "production"},
+			},
+			expected: EnvironmentsVariables{
+				"staging": []Variable{
+					{Key: "environment", Value: "staging", Category: "terraform"},
+				},
+				"production": []Variable{
+					{Key: "environment", Value: "production", Category: "terraform"},
+				},
+			},
+		},
+		{
+			message: "error when environment not passed",
+			input: testCaseParseEnvironmentsVariablesInput{
+				value: `---
+staging:
+- key: environment
+  value: staging 
+  category: terraform
+production:
+- key: environment
+  value: production
+  category: terraform`,
+				envs: Environments{"staging"},
+			},
+			err: ErrEnvironmentNotFound,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		t.Run(tc.message, func(t *testing.T) {
+			vars, err := ParseEnvironmentsVariables(tc.input.value, tc.input.envs)
+
+			if tc.err != nil {
+				assert.ErrorIs(t, err, tc.err)
+			} else {
+				require.NoError(t, err)
+				assert.Equal(t, tc.expected, vars)
+			}
+		})
+	}
+}

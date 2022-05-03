@@ -19,7 +19,7 @@ type EnvironmentsVariables map[string][]Variable
 
 // ParseEnvironmentsVariables returns an EnvironmentsVariables struct from a string
 func ParseEnvironmentsVariables(s string, envs Environments) (EnvironmentsVariables, error) {
-	var wsVars EnvironmentsVariables
+	wsVars := EnvironmentsVariables{}
 
 	if err := yaml.Unmarshal([]byte(s), &wsVars); err != nil {
 		return EnvironmentsVariables{}, fmt.Errorf("failed to parse workspace variables: %w", err)
@@ -32,7 +32,7 @@ func ParseEnvironmentsVariables(s string, envs Environments) (EnvironmentsVariab
 
 	for env := range wsVars {
 		if _, ok := eMap[env]; !ok {
-			return nil, fmt.Errorf("environment %s in passed tags not found in environments %v: %w", env, envs, ErrEnvironmentNotFound)
+			return nil, fmt.Errorf("environment %s in passed variables not found in environments %v: %w", env, envs, ErrEnvironmentNotFound)
 		}
 	}
 
