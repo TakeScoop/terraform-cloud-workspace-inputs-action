@@ -42,7 +42,7 @@ func TestOutputsFromInputs(t *testing.T) {
 					"staging":    {"environment:staging"},
 					"production": {"environment:production"},
 				},
-				EnvironmentsVariables: map[string][]Variable{
+				EnvironmentsVariables: EnvironmentsVariables{
 					"staging":    {{Key: "environment", Value: "staging", Category: "terraform"}},
 					"production": {{Key: "environment", Value: "production", Category: "terraform"}},
 				},

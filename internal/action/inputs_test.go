@@ -46,7 +46,7 @@ production:
 			expected: Config{
 				Name:         "workspace",
 				Environments: Environments{"staging", "production"},
-				EnvironmentsVariables: map[string][]Variable{
+				EnvironmentsVariables: EnvironmentsVariables{
 					"staging":    {{Key: "foo", Value: "bar", Category: "terraform"}},
 					"production": {{Key: "baz", Value: "woz", Category: "terraform"}},
 				},
@@ -68,7 +68,7 @@ staging:
 			expected: Config{
 				Name:         "workspace",
 				Environments: Environments{"staging", "production"},
-				EnvironmentsVariables: map[string][]Variable{
+				EnvironmentsVariables: EnvironmentsVariables{
 					"staging": {{Key: "foo", Value: "bar", Category: "terraform"}},
 				},
 			},

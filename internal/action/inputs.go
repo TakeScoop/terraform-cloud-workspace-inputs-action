@@ -2,9 +2,6 @@ package action
 
 import (
 	"errors"
-	"fmt"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Inputs struct {
@@ -30,21 +27,9 @@ func (i Inputs) Parse() (Config, error) {
 		return Config{}, err
 	}
 
-	var wsVars map[string][]Variable
-	if err := yaml.Unmarshal([]byte(i.EnvironmentsVariables), &wsVars); err != nil {
-		return Config{}, fmt.Errorf("failed to parse workspace variables: %w", err)
-	}
-
-	for env := range wsVars {
-		found := false
-		for _, e := range environments {
-			if e == env {
-				found = true
-			}
-		}
-		if !found {
-			return Config{}, fmt.Errorf("environment %s in passed tags not found in environments %v: %w", env, environments, ErrEnvironmentNotFound)
-		}
+	wsVars, err := ParseEnvironmentsVariables(i.EnvironmentsVariables, environments)
+	if err != nil {
+		return Config{}, err
 	}
 
 	wsTags, err := ParseEnvironmentsTags(i.EnvironmentsTags, environments)
