@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type testCaseMergeEnvironmentsVariables struct {
@@ -174,7 +175,7 @@ func TestEnvironmentsVariablesSetOutput(t *testing.T) {
 
 			o := newTestOutputter()
 
-			tc.input.SetOutputs(&o)
+			require.NoError(t, tc.input.SetOutputs(&o))
 
 			assert.ElementsMatch(t, tc.expected, o.masked)
 		})
