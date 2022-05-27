@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/sethvargo/go-githubactions v0.5.3
 	github.com/stretchr/testify v1.7.1
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
