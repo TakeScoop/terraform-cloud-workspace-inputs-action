@@ -1,9 +1,11 @@
 module github.com/takescoop/compose-inputs
 
-go 1.18
+go 1.21
+
+toolchain go1.22.0
 
 require (
-	github.com/sethvargo/go-githubactions v0.5.3
+	github.com/sethvargo/go-githubactions v1.2.0
 	github.com/stretchr/testify v1.7.1
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 )
